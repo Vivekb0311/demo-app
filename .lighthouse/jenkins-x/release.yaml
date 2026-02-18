@@ -27,15 +27,15 @@ spec:
               - mountPath: /root/.gnupg
                 name: release-gpg
           steps:
+            # clone the repo
             - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
+            # compute next version + set jx variables
             - name: next-version
             - name: jx-variables
+            # build the Maven jar
             - name: build-mvn-install
-            - name: check-registry
+            # build and push container image with Kaniko
             - name: build-container-build
-            - name: promote-changelog
-            - name: promote-helm-release
-            - name: promote-jx-promote
           volumes:
             - name: maven-settings
               secret:
