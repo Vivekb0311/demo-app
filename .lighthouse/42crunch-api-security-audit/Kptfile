@@ -1,0 +1,18 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: 42crunch-api-security-audit
+upstream:
+  type: git
+  git:
+    repo: https://github.com/tektoncd/catalog
+    directory: /task/42crunch-api-security-audit/0.1
+    ref: main
+  updateStrategy: resource-merge
+upstreamLock:
+  type: git
+  git:
+    repo: https://github.com/tektoncd/catalog
+    directory: /task/42crunch-api-security-audit/0.1
+    ref: main
+    commit: 255f9d3e2f0bb3d1ec38d002443c75b9b3e830b2

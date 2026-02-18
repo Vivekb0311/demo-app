@@ -1,0 +1,22 @@
+apiVersion: config.lighthouse.jenkins-x.io/v1alpha1
+kind: TriggerConfig
+metadata:
+  creationTimestamp: null
+  name: triggers
+spec:
+  postsubmits:
+  - agent: tekton-pipeline
+    branches:
+    - main
+    - master
+    context: 42crunch-api-security-audit
+    name: 42crunch-api-security-audit
+    source: 42crunch-api-security-audit.yaml
+  presubmits:
+  - agent: tekton-pipeline
+    always_run: true
+    context: 42crunch-api-security-audit
+    name: 42crunch-api-security-audit
+    rerun_command: /42crunch-api-security-audit
+    source: 42crunch-api-security-audit.yaml
+    trigger: (?m)^/42crunch-api-security-audit?(s+|$)
