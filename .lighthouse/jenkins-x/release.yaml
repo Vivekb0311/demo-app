@@ -1,0 +1,49 @@
+# Demo release pipeline: Maven + Kaniko + Helm deploy
+# Uses standard JX Maven pack; image repo/tag set by jx-variables from cluster.
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: release
+spec:
+  pipelineSpec:
+    tasks:
+      - name: from-build-pack
+        taskSpec:
+          stepTemplate:
+            env:
+              - name: MAVEN_OPTS
+                value: "-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3"
+              - name: HOME
+                value: /tekton/home
+            envFrom:
+              - secretRef:
+                  name: jx-boot-job-env-vars
+                  optional: true
+            image: uses:jenkins-x/jx3-pipeline-catalog/tasks/maven-java17/release.yaml@versionStream
+            workingDir: /workspace/source
+            volumeMounts:
+              - mountPath: /root/.m2/
+                name: maven-settings
+              - mountPath: /root/.gnupg
+                name: release-gpg
+          steps:
+            - image: uses:jenkins-x/jx3-pipeline-catalog/tasks/git-clone/git-clone.yaml@versionStream
+            - name: next-version
+            - name: jx-variables
+            - name: build-mvn-install
+            - name: check-registry
+            - name: build-container-build
+            - name: promote-changelog
+            - name: promote-helm-release
+            - name: promote-jx-promote
+          volumes:
+            - name: maven-settings
+              secret:
+                optional: true
+                secretName: jenkins-maven-settings
+            - name: release-gpg
+              secret:
+                optional: true
+                secretName: jenkins-release-gpg
+  serviceAccountName: tekton-bot
+  timeout: 12h0m0s
