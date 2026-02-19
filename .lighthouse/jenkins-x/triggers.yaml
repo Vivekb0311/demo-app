@@ -8,11 +8,10 @@ spec:
     optional: false
     source: "pullrequest.yaml"
   postsubmits:
-  # Run release on push to main/master or version tag (e.g. v0.1.2)
+  # Run release only on push to main/master (one run per push; no tag trigger to avoid multiple runs)
   - name: release
     context: "release"
     source: "release.yaml"
     branches:
     - ^main$
     - ^master$
-    - ^v[0-9]+\.[0-9]+\.[0-9]+$
