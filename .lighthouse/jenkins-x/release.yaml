@@ -15,6 +15,11 @@ spec:
                 value: "-Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=25 -Dmaven.wagon.http.retryHandler.count=3"
               - name: HOME
                 value: /tekton/home
+              # Override registry so Kaniko pushes to on-prem, not ghcr.io
+              - name: PUSH_CONTAINER_REGISTRY
+                value: container.visionwaves.com
+              - name: DOCKER_REGISTRY_ORG
+                value: visionwaves
             envFrom:
               - secretRef:
                   name: jx-boot-job-env-vars
